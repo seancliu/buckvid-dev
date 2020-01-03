@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.buckvid.mapper.ReportsMapper" >
+  <resultMap id="BaseResultMap" type="com.buckvid.pojo.Reports" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="reported_user_id" property="reportedUserId" jdbcType="VARCHAR" />
+    <result column="reported_video_id" property="reportedVideoId" jdbcType="VARCHAR" />
+    <result column="title" property="title" jdbcType="VARCHAR" />
+    <result column="content" property="content" jdbcType="VARCHAR" />
+    <result column="reporter_id" property="reporterId" jdbcType="VARCHAR" />
+    <result column="timestamp" property="timestamp" jdbcType="TIMESTAMP" />
+  </resultMap>
+</mapper>
