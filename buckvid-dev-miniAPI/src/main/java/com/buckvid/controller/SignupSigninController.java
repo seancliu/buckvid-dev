@@ -1,20 +1,24 @@
 package com.buckvid.controller;
 
 import com.buckvid.pojo.BuckvidUsers;
+import com.buckvid.pojo.vo.BuckvidUsersVO;
 import com.buckvid.service.UserService;
 import com.buckvid.utils.BuckvidJSONResult;
 import com.buckvid.utils.MD5Utils;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.UUID;
+
 @RestController
 @Api(value = "SignUp/SignIn API", tags = "SignUp/SignIn Controller")
-public class SignupSigninController {
+public class SignupSigninController extends BasicController {
 	@Autowired
 	private UserService userService;
 
@@ -38,8 +42,20 @@ public class SignupSigninController {
 			userService.saveUser(user);
 		}
 
+		BuckvidUsersVO userVO = setUserRedisSessionToken(user);
+
 		user.setPassword(""); // avoid password leaks
-		return BuckvidJSONResult.ok(user);
+		return BuckvidJSONResult.ok(userVO);
+	}
+
+	public BuckvidUsersVO setUserRedisSessionToken(BuckvidUsers user) {
+		String uniqueToken = UUID.randomUUID().toString();
+		redis.set(USER_REDIS_SESSION + ":" + user.getId(), uniqueToken, 1000 * 60 * 30); // timeout: 30 min
+
+		BuckvidUsersVO userVO = new BuckvidUsersVO();
+		BeanUtils.copyProperties(user, userVO);
+		userVO.setUserToken(uniqueToken);
+		return userVO;
 	}
 
 	@ApiOperation(value = "SignIn", notes = "SignIn API")
@@ -55,7 +71,8 @@ public class SignupSigninController {
 
 		if (result != null) {
 			result.setPassword("");
-			return BuckvidJSONResult.ok(result);
+			BuckvidUsersVO userVO = setUserRedisSessionToken(result);
+			return BuckvidJSONResult.ok(userVO);
 		} else {
 			return BuckvidJSONResult.errorMsg("The username and/or password you specified are not correct.");
 		}
