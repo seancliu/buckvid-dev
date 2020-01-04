@@ -6,6 +6,7 @@ import com.buckvid.service.UserService;
 import com.buckvid.utils.BuckvidJSONResult;
 import com.buckvid.utils.MD5Utils;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
@@ -17,8 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.UUID;
 
 @RestController
-@Api(value = "SignUp/SignIn API", tags = "SignUp/SignIn Controller")
-public class SignupSigninController extends BasicController {
+@Api(value = "SignUp/SignIn/SignOut API", tags = "SignUp/SignIn/SignOut Controller")
+public class SignController extends BasicController {
 	@Autowired
 	private UserService userService;
 
@@ -76,5 +77,13 @@ public class SignupSigninController extends BasicController {
 		} else {
 			return BuckvidJSONResult.errorMsg("The username and/or password you specified are not correct.");
 		}
+	}
+
+	@ApiOperation(value = "SignOut", notes = "SignOut API")
+	@ApiImplicitParam(name = "userId", value = "userId", required = true, dataType = "String", paramType = "query")
+	@PostMapping("/signout")
+	public BuckvidJSONResult signOut(String userId) throws Exception {
+		redis.del(USER_REDIS_SESSION + ":" + userId);
+		return BuckvidJSONResult.ok();
 	}
 }
