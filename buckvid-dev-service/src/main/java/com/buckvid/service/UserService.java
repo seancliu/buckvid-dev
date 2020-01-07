@@ -23,4 +23,6 @@ public interface UserService {
      * @return matched user
      */
     public BuckvidUsers queryForSignIn(String username, String password);
+
+    public void updateUserInfo(BuckvidUsers user);
 }

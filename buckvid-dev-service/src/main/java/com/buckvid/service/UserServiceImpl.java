@@ -49,4 +49,12 @@ public class UserServiceImpl implements UserService {
 
         return result;
     }
+
+    @Override
+    public void updateUserInfo(BuckvidUsers user) {
+        Example userExameple = new Example(BuckvidUsers.class);
+        Example.Criteria criteria = userExameple.createCriteria();
+        criteria.andEqualTo("id", user.getId());
+        usersMapper.updateByExampleSelective(user, userExameple);
+    }
 }
