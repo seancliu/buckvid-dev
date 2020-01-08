@@ -79,6 +79,21 @@ public class UserController extends BasicController {
 		user.setId(userId);
 		user.setIcon(uploadPathDb);
 		userService.updateUserInfo(user);
-		return BuckvidJSONResult.ok();
+		return BuckvidJSONResult.ok(uploadPathDb);
 	}
+
+    @ApiOperation(value = "QueryUserInfo", notes = "QueryUserInfo API")
+    @ApiImplicitParam(name = "userId", value = "userId", required = true, dataType = "String", paramType = "query")
+    @PostMapping("/query")
+    public @ResponseBody BuckvidJSONResult query(String userId) throws Exception {
+        if (StringUtils.isBlank(userId)) {
+            return BuckvidJSONResult.errorMsg("User ID cannot be empty");
+        }
+
+        BuckvidUsers userInfo = userService.queryUserInfo(userId);
+        BuckvidUsersVO userVO = new BuckvidUsersVO();
+        BeanUtils.copyProperties(userInfo, userVO);
+
+        return BuckvidJSONResult.ok(userVO);
+    }
 }

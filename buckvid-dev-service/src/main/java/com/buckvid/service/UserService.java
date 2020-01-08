@@ -25,4 +25,6 @@ public interface UserService {
     public BuckvidUsers queryForSignIn(String username, String password);
 
     public void updateUserInfo(BuckvidUsers user);
+
+    public BuckvidUsers queryUserInfo(String userId);
 }

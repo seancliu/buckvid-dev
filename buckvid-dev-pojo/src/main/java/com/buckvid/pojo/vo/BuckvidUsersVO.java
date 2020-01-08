@@ -1,5 +1,6 @@
 package com.buckvid.pojo.vo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -20,6 +21,7 @@ public class BuckvidUsersVO {
     private String username;
 
     @ApiModelProperty(value = "password", name = "password", example = "123456", required = true)
+    @JsonIgnore
     private String password;
 
     @ApiModelProperty(hidden = true)
