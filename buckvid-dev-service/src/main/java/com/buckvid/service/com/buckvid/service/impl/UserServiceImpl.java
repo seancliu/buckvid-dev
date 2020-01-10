@@ -1,7 +1,8 @@
-package com.buckvid.service;
+package com.buckvid.service.com.buckvid.service.impl;
 
 import com.buckvid.mapper.BuckvidUsersMapper;
 import com.buckvid.pojo.BuckvidUsers;
+import com.buckvid.service.UserService;
 import org.n3r.idworker.Sid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
