@@ -15,4 +15,5 @@ public interface BgmService {
      */
     public List<Bgm> queryBgmList();
 
+    public Bgm queryBgmById(String bgmId);
 }

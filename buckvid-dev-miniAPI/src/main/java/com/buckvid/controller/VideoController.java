@@ -1,10 +1,17 @@
 package com.buckvid.controller;
 
+import com.buckvid.enums.VideoStatusEnum;
+import com.buckvid.pojo.Bgm;
 import com.buckvid.pojo.BuckvidUsers;
+import com.buckvid.pojo.Videos;
+import com.buckvid.service.BgmService;
+import com.buckvid.service.VideoService;
 import com.buckvid.utils.BuckvidJSONResult;
+import com.buckvid.utils.MergeVideoBgm;
 import io.swagger.annotations.*;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -15,11 +22,18 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Date;
+import java.util.UUID;
 
 @RestController
 @Api(value = "Video API", tags = {"Video Controller"})
 @RequestMapping("/video")
 public class VideoController {
+	@Autowired
+	private BgmService bgmService;
+
+	@Autowired
+	private VideoService videoService;
 
 	@ApiOperation(value = "UploadVideo", notes = "UploadVideo API")
 	@ApiImplicitParams({
@@ -51,11 +65,12 @@ public class VideoController {
 		String uploadPathDb = "/" + userId + "/video";
 		FileOutputStream fileOutputStream = null;
 		InputStream inputStream = null;
+		String finalVideoPath = "";
 		try {
 			if (file != null) {
 				String fileName = file.getOriginalFilename();
 				if (StringUtils.isNotBlank(fileName)) {
-					String finalVideoPath = fileSpace + uploadPathDb + "/" + fileName;
+					finalVideoPath = fileSpace + uploadPathDb + "/" + fileName;
 
 					uploadPathDb += "/" + fileName;
 
@@ -81,6 +96,33 @@ public class VideoController {
 				fileOutputStream.close();
 			}
 		}
+
+		// check if bgm is selected
+		if (StringUtils.isNotBlank(bgmId)) {
+			Bgm bgm = bgmService.queryBgmById(bgmId);
+			String bgmInputPath = fileSpace + bgm.getPath();
+
+			MergeVideoBgm tool = new MergeVideoBgm("ffmpeg"); // error-prone
+			String videoInputPath = finalVideoPath;
+			String videoOutputName = UUID.randomUUID().toString() + ".mp4";
+			uploadPathDb = "/" + userId + "/" + "video" + "/" + videoOutputName;
+			String videoOutputPath = fileSpace + uploadPathDb;
+			tool.convertor(videoInputPath, bgmInputPath, videoDuration, videoOutputPath);
+		}
+
+		// save video info to DB
+		Videos video = new Videos();
+		video.setAudioId(bgmId);
+		video.setUserId(userId);
+		video.setVideoSeconds((float)videoDuration);
+		video.setVideoWidth(videoWidth);
+		video.setVideoHeight(videoHeight);
+		video.setVideoDesc(videoDesc);
+		video.setVideoPath(uploadPathDb);
+		video.setStatus(VideoStatusEnum.SUCCESS.value);
+		video.setTimestamp(new Date());
+
+		videoService.saveVideo(video);
 
 		return BuckvidJSONResult.ok();
 	}
