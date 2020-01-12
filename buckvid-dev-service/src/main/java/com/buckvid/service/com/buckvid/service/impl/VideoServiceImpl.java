@@ -25,9 +25,20 @@ public class VideoServiceImpl implements VideoService {
 
     @Transactional(propagation = Propagation.REQUIRED)
     @Override
-    public void saveVideo(Videos video) {
+    public String saveVideo(Videos video) {
         String id = sid.nextShort();
         video.setId(id);
         videosMapper.insertSelective(video);
+
+        return id;
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Override
+    public void updateVideo(String videoId, String thumbPath) {
+        Videos video = new Videos();
+        video.setId(videoId);
+        video.setThumbnailPath(thumbPath);
+        videosMapper.updateByPrimaryKeySelective(video);
     }
 }

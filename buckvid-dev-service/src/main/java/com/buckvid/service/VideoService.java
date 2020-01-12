@@ -8,5 +8,10 @@ import java.util.List;
 public interface VideoService {
 
 
-    public void saveVideo(Videos video);
+    public String saveVideo(Videos video);
+
+    /**
+     *  Update video thumb
+     * */
+    public void updateVideo(String videoId, String thumbPath);
 }
