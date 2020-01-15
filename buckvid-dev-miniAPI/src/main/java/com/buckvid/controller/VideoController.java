@@ -9,14 +9,12 @@ import com.buckvid.service.VideoService;
 import com.buckvid.utils.BuckvidJSONResult;
 import com.buckvid.utils.GetVideoThumb;
 import com.buckvid.utils.MergeVideoBgm;
+import com.buckvid.utils.PagedResult;
 import io.swagger.annotations.*;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -25,6 +23,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
 import java.util.UUID;
+
+import static com.buckvid.controller.BasicController.PAGE_SIZE;
 
 @RestController
 @Api(value = "Video API", tags = {"Video Controller"})
@@ -190,5 +190,37 @@ public class VideoController {
 		// update thumb
 		videoService.updateVideo(videoId, uploadPathDb);
 		return BuckvidJSONResult.ok();
+	}
+
+	/**
+	 *
+	 * @Description: paged display and search
+	 * saveRecord：	1 - save
+ * 				 	0 - don't save
+	 */
+	@PostMapping(value="/showAll")
+	public BuckvidJSONResult showAll(@RequestBody Videos video, Integer saveRecord,
+									 Integer page, Integer pageSize) throws Exception {
+
+		if (page == null) {
+			page = 1;
+		}
+
+		if (pageSize == null) {
+			pageSize = PAGE_SIZE;
+		}
+
+		PagedResult result = videoService.getAllVideos(video, saveRecord, page, pageSize);
+		return BuckvidJSONResult.ok(result);
+	}
+
+
+	/**
+	 *
+	 * @Description: retrieve hot trends
+	 */
+	@PostMapping(value="/trends")
+	public BuckvidJSONResult trends() throws Exception {
+		return BuckvidJSONResult.ok(videoService.getTrends());
 	}
 }

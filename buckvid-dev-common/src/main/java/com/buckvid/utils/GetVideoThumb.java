@@ -8,7 +8,7 @@ import java.util.List;
 
 /**
  * 
- * @Description: 获取视频的信息
+ * @Description: GetVideoThumb
  */
 public class GetVideoThumb {
 	// 视频路径
