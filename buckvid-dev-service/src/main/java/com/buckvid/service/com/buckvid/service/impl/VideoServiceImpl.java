@@ -71,7 +71,7 @@ public class VideoServiceImpl implements VideoService {
         }
 
         PageHelper.startPage(page, pageSize);
-        List<VideosVO> list = videosMapperCustom.queryAllVideos(desc);
+        List<VideosVO> list = videosMapperCustom.queryAllVideos(desc, userId);
         PageInfo<VideosVO> pageList = new PageInfo<>(list);
 
         PagedResult pagedResult = new PagedResult();
