@@ -27,4 +27,12 @@ public interface UserService {
     public void updateUserInfo(BuckvidUsers user);
 
     public BuckvidUsers queryUserInfo(String userId);
+
+    /**
+     *
+     * @param userId
+     * @param videoId
+     * @return if the user has liked the video
+     */
+    public boolean isUserLikedVideo(String userId, String videoId);
 }

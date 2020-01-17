@@ -22,5 +22,12 @@ public interface VideoService {
      * */
     public PagedResult getAllVideos(Videos video, Integer saveRecord, Integer page, Integer pageSize);
 
+    /**
+     *  Get hot trends
+     * */
     public List<String> getTrends();
+
+    public void userLikesVideo(String userId, String videoId, String videoCreatorId);
+
+    public void userUnlikesVideo(String userId, String videoId, String videoCreatorId);
 }

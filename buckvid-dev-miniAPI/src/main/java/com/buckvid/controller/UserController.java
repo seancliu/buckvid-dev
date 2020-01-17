@@ -2,6 +2,7 @@ package com.buckvid.controller;
 
 import com.buckvid.pojo.BuckvidUsers;
 import com.buckvid.pojo.vo.BuckvidUsersVO;
+import com.buckvid.pojo.vo.CreatorVideo;
 import com.buckvid.service.UserService;
 import com.buckvid.utils.BuckvidJSONResult;
 import com.buckvid.utils.MD5Utils;
@@ -96,4 +97,27 @@ public class UserController extends BasicController {
 
         return BuckvidJSONResult.ok(userVO);
     }
+
+	@PostMapping("/queryCreator")
+	public BuckvidJSONResult queryPublisher(String currUserId, String videoId,
+										  String creatorUserId) throws Exception {
+
+		if (StringUtils.isBlank(creatorUserId)) {
+			return BuckvidJSONResult.errorMsg("");
+		}
+
+		// 1. query creator's info
+		BuckvidUsers userInfo = userService.queryUserInfo(creatorUserId);
+		BuckvidUsersVO creator = new BuckvidUsersVO();
+		BeanUtils.copyProperties(userInfo, creator);
+
+		// 2. query the relationship between current user and the video
+		boolean userLikesVideo = userService.isUserLikedVideo(currUserId, videoId);
+
+		CreatorVideo bean = new CreatorVideo();
+		bean.setCreator(creator);
+		bean.setUserLikesVideo(userLikesVideo);
+
+		return BuckvidJSONResult.ok(bean);
+	}
 }

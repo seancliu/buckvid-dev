@@ -1,8 +1,11 @@
 package com.buckvid.service.com.buckvid.service.impl;
 
 import com.buckvid.mapper.BuckvidUsersMapper;
+import com.buckvid.mapper.UsersVideosMapper;
 import com.buckvid.pojo.BuckvidUsers;
+import com.buckvid.pojo.UsersVideos;
 import com.buckvid.service.UserService;
+import org.apache.commons.lang3.StringUtils;
 import org.n3r.idworker.Sid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
@@ -12,10 +15,15 @@ import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 import tk.mybatis.mapper.util.Sqls;
 
+import java.util.List;
+
 @Service
 public class UserServiceImpl implements UserService {
     @Autowired
     private BuckvidUsersMapper usersMapper;
+
+    @Autowired
+    private UsersVideosMapper usersVideosMapper;
 
     @Autowired
     private Sid sid;
@@ -67,5 +75,25 @@ public class UserServiceImpl implements UserService {
         criteria.andEqualTo("id", userId);
         BuckvidUsers user = usersMapper.selectOneByExample(userExameple);
         return user;
-}
+    }
+
+    @Transactional(propagation = Propagation.SUPPORTS)
+    @Override
+    public boolean isUserLikedVideo(String userId, String videoId) {
+        if (StringUtils.isBlank((userId)) || StringUtils.isBlank((videoId))) {
+            return false;
+        }
+        Example example = new Example(UsersVideos.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("userId", userId);
+        criteria.andEqualTo("videoId", videoId);
+
+        List<UsersVideos> list = usersVideosMapper.selectByExample(example);
+
+        if (list != null && list.size() > 0) {
+            return true;
+        }
+
+        return false;
+    }
 }

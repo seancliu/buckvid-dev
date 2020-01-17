@@ -14,4 +14,12 @@
     <result column="following_count" property="followingCount" jdbcType="INTEGER" />
     <result column="like_received_count" property="likeReceivedCount" jdbcType="INTEGER" />
   </resultMap>
+
+  <update id="addLikeReceivedCount" parameterType="String">
+  	update buckvid_users set like_received_count=like_received_count+1 where id=#{userId}
+  </update>
+
+  <update id="reduceLikeReceivedCount" parameterType="String">
+  	update buckvid_users set like_received_count=like_received_count-1 where id=#{userId}
+  </update>
 </mapper>

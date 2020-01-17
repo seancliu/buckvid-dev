@@ -35,4 +35,12 @@
         and v.status = 1
     order by v.timestamp desc
   </select>
+
+  <update id="addVideoLikeCount" parameterType="String">
+  	update videos set like_count=like_count+1 where id=#{videoId}
+  </update>
+
+  <update id="reduceVideoLikeCount" parameterType="String">
+  	update videos set like_count=like_count-1 where id=#{videoId}
+  </update>
 </mapper>

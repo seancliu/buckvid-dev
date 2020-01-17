@@ -223,4 +223,16 @@ public class VideoController {
 	public BuckvidJSONResult trends() throws Exception {
 		return BuckvidJSONResult.ok(videoService.getTrends());
 	}
+
+	@PostMapping(value="/userLikes")
+	public BuckvidJSONResult userLikes(String userId, String videoId, String videoCreatorId) throws Exception {
+		videoService.userLikesVideo(userId, videoId, videoCreatorId);
+		return BuckvidJSONResult.ok();
+	}
+
+	@PostMapping(value="/userUnlikes")
+	public BuckvidJSONResult userUnlikes(String userId, String videoId, String videoCreatorId) throws Exception {
+		videoService.userUnlikesVideo(userId, videoId, videoCreatorId);
+		return BuckvidJSONResult.ok();
+	}
 }
