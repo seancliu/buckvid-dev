@@ -22,4 +22,20 @@
   <update id="reduceLikeReceivedCount" parameterType="String">
   	update buckvid_users set like_received_count=like_received_count-1 where id=#{userId}
   </update>
+
+  <update id="addFollowersCount" parameterType="String">
+  	update buckvid_users set followers_count=followers_count+1 where id=#{userId}
+  </update>
+
+  <update id="reduceFollowersCount" parameterType="String">
+  	update buckvid_users set followers_count=followers_count-1 where id=#{userId}
+  </update>
+
+  <update id="addFollowingCount" parameterType="String">
+  	update buckvid_users set following_count=following_count+1 where id=#{userId}
+  </update>
+
+  <update id="reduceFollowingCount" parameterType="String">
+  	update buckvid_users set following_count=following_count-1 where id=#{userId}
+  </update>
 </mapper>

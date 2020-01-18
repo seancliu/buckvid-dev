@@ -35,4 +35,28 @@ public interface UserService {
      * @return if the user has liked the video
      */
     public boolean isUserLikedVideo(String userId, String videoId);
+
+    /**
+     * @param userId
+     * @param followerId
+     *
+     * when a user(follower) follows another user(user)
+     */
+    public void saveUserFollowerRelationship(String userId, String followerId);
+
+    /**
+     * @param userId
+     * @param followerId
+     *
+     * when a user(follower) unfollows another user(user)
+     */
+    public void deleteUserFollowerRelationship(String userId, String followerId);
+
+    /**
+     * @param userId
+     * @param followerId
+     *
+     * query if followerId follows userId
+     */
+    public boolean queryIfFollowed(String userId, String followerId);
 }

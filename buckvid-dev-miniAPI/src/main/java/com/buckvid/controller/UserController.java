@@ -86,7 +86,7 @@ public class UserController extends BasicController {
     @ApiOperation(value = "QueryUserInfo", notes = "QueryUserInfo API")
     @ApiImplicitParam(name = "userId", value = "userId", required = true, dataType = "String", paramType = "query")
     @PostMapping("/query")
-    public @ResponseBody BuckvidJSONResult query(String userId) throws Exception {
+    public @ResponseBody BuckvidJSONResult query(String userId, String followerId) throws Exception {
         if (StringUtils.isBlank(userId)) {
             return BuckvidJSONResult.errorMsg("User ID cannot be empty");
         }
@@ -94,6 +94,9 @@ public class UserController extends BasicController {
         BuckvidUsers userInfo = userService.queryUserInfo(userId);
         BuckvidUsersVO userVO = new BuckvidUsersVO();
         BeanUtils.copyProperties(userInfo, userVO);
+
+
+        userVO.setFollowed(userService.queryIfFollowed(userId, followerId));
 
         return BuckvidJSONResult.ok(userVO);
     }
@@ -119,5 +122,23 @@ public class UserController extends BasicController {
 		bean.setUserLikesVideo(userLikesVideo);
 
 		return BuckvidJSONResult.ok(bean);
+	}
+
+	@PostMapping("/follow")
+	public BuckvidJSONResult follow(String userId, String followerId) throws Exception {
+		if (StringUtils.isBlank(userId) || StringUtils.isBlank(followerId)) {
+			return BuckvidJSONResult.errorMsg("");
+		}
+		userService.saveUserFollowerRelationship(userId, followerId);
+		return BuckvidJSONResult.ok("Followed successfully");
+	}
+
+	@PostMapping("/unfollow")
+	public BuckvidJSONResult unfollow(String userId, String followerId) throws Exception {
+		if (StringUtils.isBlank(userId) || StringUtils.isBlank(followerId)) {
+			return BuckvidJSONResult.errorMsg("");
+		}
+		userService.deleteUserFollowerRelationship(userId, followerId);
+		return BuckvidJSONResult.ok("Unfollowed");
 	}
 }

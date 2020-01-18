@@ -1,8 +1,10 @@
 package com.buckvid.service.com.buckvid.service.impl;
 
 import com.buckvid.mapper.BuckvidUsersMapper;
+import com.buckvid.mapper.UsersFollowersMapper;
 import com.buckvid.mapper.UsersVideosMapper;
 import com.buckvid.pojo.BuckvidUsers;
+import com.buckvid.pojo.UsersFollowers;
 import com.buckvid.pojo.UsersVideos;
 import com.buckvid.service.UserService;
 import org.apache.commons.lang3.StringUtils;
@@ -24,6 +26,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UsersVideosMapper usersVideosMapper;
+
+    @Autowired
+    private UsersFollowersMapper usersFollowersMapper;
 
     @Autowired
     private Sid sid;
@@ -90,10 +95,55 @@ public class UserServiceImpl implements UserService {
 
         List<UsersVideos> list = usersVideosMapper.selectByExample(example);
 
-        if (list != null && list.size() > 0) {
+        if (list != null && !list.isEmpty() && list.size() > 0) {
             return true;
         }
 
+        return false;
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Override
+    public void saveUserFollowerRelationship(String userId, String followerId) {
+        // 1. add the new relationship to users_followers db
+        String relId = sid.nextShort();
+        UsersFollowers uf = new UsersFollowers();
+        uf.setId(relId);
+        uf.setUserId(userId);
+        uf.setFollowerId(followerId);
+        usersFollowersMapper.insert(uf);
+
+        // 2. update followers_count and following_count in buckvid_users db
+        usersMapper.addFollowersCount(userId);
+        usersMapper.addFollowingCount(followerId);
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Override
+    public void deleteUserFollowerRelationship(String userId, String followerId) {
+        // 1. delete the relationship
+        Example example = new Example(UsersFollowers.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("userId", userId);
+        criteria.andEqualTo("followerId", followerId);
+        usersFollowersMapper.deleteByExample(example);
+
+        // 2. update followers_count and following_count in buckvid_users db
+        usersMapper.reduceFollowersCount(userId);
+        usersMapper.reduceFollowingCount(followerId);
+    }
+
+    @Override
+    public boolean queryIfFollowed(String userId, String followerId) {
+        Example example = new Example(UsersFollowers.class);
+        Example.Criteria criteria = example.createCriteria();
+        criteria.andEqualTo("userId", userId);
+        criteria.andEqualTo("followerId", followerId);
+        List<UsersFollowers> list = usersFollowersMapper.selectByExample(example);
+
+        if (list != null && !list.isEmpty() && list.size() > 0) {
+            return true;
+        }
         return false;
     }
 }

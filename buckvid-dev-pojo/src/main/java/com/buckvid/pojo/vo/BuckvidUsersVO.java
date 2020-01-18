@@ -17,6 +17,10 @@ public class BuckvidUsersVO {
     @ApiModelProperty(hidden = true)
     private String userToken;
 
+    private boolean isFollowed;
+
+
+
     @ApiModelProperty(value = "username", name = "username", example = "buckeye123", required = true)
     private String username;
 
@@ -37,6 +41,14 @@ public class BuckvidUsersVO {
 
     @ApiModelProperty(hidden = true)
     private Integer likeReceivedCount;
+
+    public void setFollowed(boolean followed) {
+        isFollowed = followed;
+    }
+
+    public boolean isFollowed() {
+        return isFollowed;
+    }
 
     /**
      * @return id
