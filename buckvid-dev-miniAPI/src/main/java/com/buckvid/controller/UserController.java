@@ -1,6 +1,7 @@
 package com.buckvid.controller;
 
 import com.buckvid.pojo.BuckvidUsers;
+import com.buckvid.pojo.Reports;
 import com.buckvid.pojo.vo.BuckvidUsersVO;
 import com.buckvid.pojo.vo.CreatorVideo;
 import com.buckvid.service.UserService;
@@ -140,5 +141,11 @@ public class UserController extends BasicController {
 		}
 		userService.deleteUserFollowerRelationship(userId, followerId);
 		return BuckvidJSONResult.ok("Unfollowed");
+	}
+
+	@PostMapping("/report")
+	public BuckvidJSONResult report(@RequestBody Reports report) {
+		userService.report(report);
+		return BuckvidJSONResult.ok("Report submitted");
 	}
 }

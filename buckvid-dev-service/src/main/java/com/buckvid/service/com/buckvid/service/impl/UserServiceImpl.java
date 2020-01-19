@@ -1,9 +1,11 @@
 package com.buckvid.service.com.buckvid.service.impl;
 
 import com.buckvid.mapper.BuckvidUsersMapper;
+import com.buckvid.mapper.ReportsMapper;
 import com.buckvid.mapper.UsersFollowersMapper;
 import com.buckvid.mapper.UsersVideosMapper;
 import com.buckvid.pojo.BuckvidUsers;
+import com.buckvid.pojo.Reports;
 import com.buckvid.pojo.UsersFollowers;
 import com.buckvid.pojo.UsersVideos;
 import com.buckvid.service.UserService;
@@ -17,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import tk.mybatis.mapper.entity.Example;
 import tk.mybatis.mapper.util.Sqls;
 
+import java.util.Date;
 import java.util.List;
 
 @Service
@@ -29,6 +32,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UsersFollowersMapper usersFollowersMapper;
+
+    @Autowired
+    private ReportsMapper reportsMapper;
 
     @Autowired
     private Sid sid;
@@ -133,6 +139,7 @@ public class UserServiceImpl implements UserService {
         usersMapper.reduceFollowingCount(followerId);
     }
 
+    @Transactional(propagation = Propagation.SUPPORTS)
     @Override
     public boolean queryIfFollowed(String userId, String followerId) {
         Example example = new Example(UsersFollowers.class);
@@ -145,5 +152,14 @@ public class UserServiceImpl implements UserService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public void report(Reports report) {
+        String reportId = sid.nextShort();
+        report.setId(reportId);
+        report.setTimestamp(new Date());
+
+        reportsMapper.insert(report);
     }
 }

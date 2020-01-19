@@ -23,6 +23,16 @@ public interface VideoService {
     public PagedResult getAllVideos(Videos video, Integer saveRecord, Integer page, Integer pageSize);
 
     /**
+     *  Paged List of Liked Videos
+     * */
+    public PagedResult getMyFavorites(String userId, Integer page, Integer pageSize);
+
+    /**
+     *  Paged List of all the Videos posted by followed users
+     * */
+    public PagedResult getMyFollowing(String userId, Integer page, Integer pageSize);
+
+    /**
      *  Get hot trends
      * */
     public List<String> getTrends();

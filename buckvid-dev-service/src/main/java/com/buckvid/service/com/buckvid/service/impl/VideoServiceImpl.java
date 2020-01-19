@@ -89,6 +89,40 @@ public class VideoServiceImpl implements VideoService {
 
     @Transactional(propagation = Propagation.SUPPORTS)
     @Override
+    public PagedResult getMyFavorites(String userId, Integer page, Integer pageSize) {
+        PageHelper.startPage(page, pageSize);
+        List<VideosVO> list = videosMapperCustom.queryMyFavorites(userId);
+
+        PageInfo<VideosVO> pageList = new PageInfo<>(list);
+
+        PagedResult pagedResult = new PagedResult();
+        pagedResult.setTotal(pageList.getPages());
+        pagedResult.setRows(list);
+        pagedResult.setPage(page);
+        pagedResult.setRecords(pageList.getTotal());
+
+        return pagedResult;
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED)
+    @Override
+    public PagedResult getMyFollowing(String userId, Integer page, Integer pageSize) {
+        PageHelper.startPage(page, pageSize);
+        List<VideosVO> list = videosMapperCustom.queryMyFollowing(userId);
+
+        PageInfo<VideosVO> pageList = new PageInfo<>(list);
+
+        PagedResult pagedResult = new PagedResult();
+        pagedResult.setTotal(pageList.getPages());
+        pagedResult.setRows(list);
+        pagedResult.setPage(page);
+        pagedResult.setRecords(pageList.getTotal());
+
+        return pagedResult;
+    }
+
+    @Transactional(propagation = Propagation.SUPPORTS)
+    @Override
     public List<String> getTrends() {
         return searchRecordsMapper.getTrends();
     }

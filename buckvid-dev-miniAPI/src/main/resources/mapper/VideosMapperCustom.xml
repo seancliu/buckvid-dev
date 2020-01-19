@@ -36,6 +36,24 @@
     order by v.timestamp desc
   </select>
 
+  <select id="queryMyFavorites" resultMap="BaseResultMap" parameterType="String">
+		select v.*,u.icon as icon,u.nickname as nickname from videos v
+		left join buckvid_users u on v.user_id = u.id
+		where
+			v.id in (select uv.video_id from users_videos uv where uv.user_id = #{userId})
+			and v.status = 1
+			order by v.timestamp desc
+  </select>
+
+  <select id="queryMyFollowing" resultMap="BaseResultMap" parameterType="String">
+		select v.*,u.icon as icon,u.nickname as nickname from videos v
+		left join buckvid_users u on v.user_id = u.id
+		where
+			v.user_id in (select uf.user_id from users_followers uf where uf.follower_id = #{userId})
+			and v.status = 1
+			order by v.timestamp desc
+  </select>
+
   <update id="addVideoLikeCount" parameterType="String">
   	update videos set like_count=like_count+1 where id=#{videoId}
   </update>

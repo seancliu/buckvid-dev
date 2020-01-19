@@ -1,6 +1,7 @@
 package com.buckvid.service;
 
 import com.buckvid.pojo.BuckvidUsers;
+import com.buckvid.pojo.Reports;
 
 public interface UserService {
 
@@ -59,4 +60,6 @@ public interface UserService {
      * query if followerId follows userId
      */
     public boolean queryIfFollowed(String userId, String followerId);
+
+    public void report(Reports report);
 }

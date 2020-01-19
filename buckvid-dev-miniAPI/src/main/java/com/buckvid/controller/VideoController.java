@@ -214,6 +214,50 @@ public class VideoController {
 		return BuckvidJSONResult.ok(result);
 	}
 
+	/**
+	 *
+	 * @Description: paged display all liked videos
+	 */
+	@PostMapping(value="/showFavorites")
+	public BuckvidJSONResult showFavorites(String userId, Integer page, Integer pageSize) throws Exception {
+		if (StringUtils.isBlank(userId)) {
+			return BuckvidJSONResult.errorMsg("");
+		}
+
+		if (page == null) {
+			page = 1;
+		}
+
+		if (pageSize == null) {
+			pageSize = 6;
+		}
+
+		PagedResult result = videoService.getMyFavorites(userId, page, pageSize);
+		return BuckvidJSONResult.ok(result);
+	}
+
+	/**
+	 *
+	 * @Description: paged display all liked videos
+	 */
+	@PostMapping(value="/showFollowing")
+	public BuckvidJSONResult showFollowing(String userId, Integer page, Integer pageSize) throws Exception {
+		if (StringUtils.isBlank(userId)) {
+			return BuckvidJSONResult.errorMsg("");
+		}
+
+		if (page == null) {
+			page = 1;
+		}
+
+		if (pageSize == null) {
+			pageSize = 6;
+		}
+
+		PagedResult result = videoService.getMyFollowing(userId, page, pageSize);
+		return BuckvidJSONResult.ok(result);
+	}
+
 
 	/**
 	 *
