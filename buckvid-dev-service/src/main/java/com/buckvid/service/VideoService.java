@@ -1,6 +1,7 @@
 package com.buckvid.service;
 
 import com.buckvid.pojo.Bgm;
+import com.buckvid.pojo.Comments;
 import com.buckvid.pojo.Videos;
 import com.buckvid.utils.PagedResult;
 
@@ -40,4 +41,8 @@ public interface VideoService {
     public void userLikesVideo(String userId, String videoId, String videoCreatorId);
 
     public void userUnlikesVideo(String userId, String videoId, String videoCreatorId);
+
+    public void saveComment(Comments comment);
+
+    public PagedResult getAllComments(String videoId, Integer page, Integer pageSize);
 }

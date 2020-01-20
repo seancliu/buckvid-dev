@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.buckvid.mapper.CommentsMapperCustom" >
+  <resultMap id="BaseResultMap" type="com.buckvid.pojo.vo.CommentsVO" >
+    <!--
+      WARNING - @mbg.generated
+    -->
+    <id column="id" property="id" jdbcType="VARCHAR" />
+    <result column="video_id" property="videoId" jdbcType="VARCHAR" />
+    <result column="from_user_id" property="fromUserId" jdbcType="VARCHAR" />
+    <result column="timestamp" property="timestamp" jdbcType="TIMESTAMP" />
+    <result column="content" property="content" jdbcType="LONGVARCHAR" />
+    <result column="icon" property="icon" jdbcType="VARCHAR" />
+    <result column="nickname" property="nickname" jdbcType="VARCHAR" />
+    <result column="toNickname" property="toNickname" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <select id="queryComments" resultMap="BaseResultMap" parameterType="String">
+	select c.*,u.icon as icon,u.nickname as nickname,tu.nickname as toNickname
+	from comments c
+	left join buckvid_users u on c.from_user_id = u.id
+	left join buckvid_users tu on c.to_user_id = tu.id
+  	where c.video_id = #{videoId} order by c.timestamp desc
+  </select>
+</mapper>

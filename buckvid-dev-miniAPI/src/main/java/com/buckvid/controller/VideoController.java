@@ -3,6 +3,7 @@ package com.buckvid.controller;
 import com.buckvid.enums.VideoStatusEnum;
 import com.buckvid.pojo.Bgm;
 import com.buckvid.pojo.BuckvidUsers;
+import com.buckvid.pojo.Comments;
 import com.buckvid.pojo.Videos;
 import com.buckvid.service.BgmService;
 import com.buckvid.service.VideoService;
@@ -278,5 +279,30 @@ public class VideoController {
 	public BuckvidJSONResult userUnlikes(String userId, String videoId, String videoCreatorId) throws Exception {
 		videoService.userUnlikesVideo(userId, videoId, videoCreatorId);
 		return BuckvidJSONResult.ok();
+	}
+
+	@PostMapping(value="/saveComment")
+	public BuckvidJSONResult saveComment(@RequestBody Comments comment, String parentCommentId, String toUserId) throws Exception {
+		comment.setParentCommentId(parentCommentId);
+		comment.setToUserId(toUserId);
+		videoService.saveComment(comment);
+		return BuckvidJSONResult.ok();
+	}
+
+	@PostMapping(value="/getVideoComments")
+	public BuckvidJSONResult getVideoComments(String videoId, Integer page, Integer pageSize) throws Exception {
+		if (StringUtils.isBlank((videoId))) {
+			return BuckvidJSONResult.errorMsg("");
+		}
+
+		if (page == null) {
+			page = 1;
+		}
+		if (pageSize == null) {
+			pageSize = 10;
+		}
+
+		PagedResult list = videoService.getAllComments(videoId, page, pageSize);
+		return BuckvidJSONResult.ok(list);
 	}
 }

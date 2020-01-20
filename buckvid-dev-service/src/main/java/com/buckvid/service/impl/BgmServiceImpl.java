@@ -1,4 +1,4 @@
-package com.buckvid.service.com.buckvid.service.impl;
+package com.buckvid.service.impl;
 
 import com.buckvid.mapper.BgmMapper;
 import com.buckvid.mapper.BuckvidUsersMapper;
